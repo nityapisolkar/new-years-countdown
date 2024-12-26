@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Year's Countdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #000428, #004e92);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 10px #ffdf00, 0 0 20px #ffdf00, 0 0 30px #ff7f00;
+            }
+            100% {
+                text-shadow: 0 0 20px #ff7f00, 0 0 30px #ff4500, 0 0 40px #ff4500;
+            }
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 2.5rem;
+        }
+
+        .time {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .time span {
+            display: block;
+            font-size: 1.5rem;
+            margin-top: 10px;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .fireworks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .firework {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: explode 1.2s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .snowflake {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px white;
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100%) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0.5;
+            }
+        }
+
+        .trees {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-evenly;
+            pointer-events: none;
+        }
+
+        .tree {
+            width: 50px;
+            height: 100px;
+            background: linear-gradient(to top, #013220, #026d36);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            position: relative;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .tree::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 50%;
+            background: linear-gradient(to bottom, #fff, transparent);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .party-emoji {
+            width: 40px;
+            height: auto;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Countdown to New Year <img src="https://static-00.iconduck.com/assets.00/party-popper-emoji-2012x2048-lhq1rf8v.png" alt="Party Popper" class="party-emoji"></h1>
+        <div class="countdown">
+            <div class="time" id="days"><span id="days-value">0</span><span>Days</span></div>
+            <div class="time" id="hours"><span id="hours-value">0</span><span>Hours</span></div>
+            <div class="time" id="minutes"><span id="minutes-value">0</span><span>Minutes</span></div>
+            <div class="time" id="seconds"><span id="seconds-value">0</span><span>Seconds</span></div>
+        </div>
+    </div>
+    <div class="fireworks" id="fireworks"></div>
+    <div class="trees">
+        <div class="tree"></div>
+        <div class="tree"></div>
+        <div class="tree"></div>
+        <div class="tree"></div>
+        <div class="tree"></div>
+    </div>
+    <footer>
+        Made with ❤️ for the New Year
+    </footer>
+
+    <script>
+        function updateCountdown() {
+            const now = new Date();
+            const nextYear = new Date(now.getFullYear() + 1, 0, 1);
+            const diff = nextYear - now;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days-value').textContent = days;
+            document.getElementById('hours-value').textContent = hours;
+            document.getElementById('minutes-value').textContent = minutes;
+            document.getElementById('seconds-value').textContent = seconds;
+        }
+
+        function createFirework() {
+            const fireworksContainer = document.getElementById('fireworks');
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+            firework.style.left = Math.random() * 100 + '%';
+            firework.style.top = Math.random() * 100 + '%';
+            firework.style.width = firework.style.height = Math.random() * 20 + 10 + 'px';
+            firework.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            fireworksContainer.appendChild(firework);
+            setTimeout(() => firework.remove(), 1200);
+        }
+
+        function createSnowflake() {
+            const fireworksContainer = document.getElementById('fireworks');
+            const snowflake = document.createElement('div');
+            snowflake.className = 'snowflake';
+            snowflake.style.left = Math.random() * 100 + '%';
+            fireworksContainer.appendChild(snowflake);
+            setTimeout(() => snowflake.remove(), 3000);
+        }
+
+        setInterval(updateCountdown, 1000);
+        setInterval(createFirework, 200);
+        setInterval(createSnowflake, 150);
+    </script>
+</body>
+</html>
